@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Das Universum als Iterierende Plattform</title>
+    <title>Projekt REBOOT φ - Rebellion gegen die Glättung</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
+                    fontFamily: {
+                        mono: ['Space Mono', 'JetBrains Mono', 'monospace'],
+                    },
                     colors: {
                         primary: '#5D5CDE',
                         secondary: '#FF6B6B',
@@ -17,22 +20,224 @@
                         structurecolor: '#FFD740',
                         balancecolor: '#64DD17',
                         energycolor: '#00B0FF',
-                        smoothcolor: '#7C4DFF'
+                        smoothcolor: '#7C4DFF',
+                        voidcolor: '#212121',
+                        rebootcolor: '#FF4081'
+                    },
+                    animation: {
+                        blink: 'blink 1.2s infinite',
+                        pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        slowfade: 'slowfade 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        blink: {
+                            '0%, 100%': { opacity: 1 },
+                            '50%': { opacity: 0 },
+                        },
+                        slowfade: {
+                            '0%, 100%': { opacity: 0.2 },
+                            '50%': { opacity: 0.8 },
+                        }
                     }
                 }
             }
         }
     </script>
 </head>
-<body class="bg-white dark:bg-gray-900 transition-colors duration-300">
+<body class="bg-black text-white transition-colors duration-300">
     <div class="min-h-screen flex flex-col">
-        <header class="bg-primary/10 dark:bg-primary/20 py-4">
+        <!-- Logbuch Overlay - zunächst versteckt -->
+        <div id="logbookOverlay" class="fixed inset-0 z-50 bg-black/90 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-1000">
+            <div class="max-w-2xl p-8 font-mono text-green-400 border border-green-500/30 bg-black/80 rounded-md shadow-lg shadow-green-500/20 overflow-y-auto max-h-[80vh]">
+                <h2 class="text-2xl font-bold mb-6 text-green-300">INTERSTELLARES LOGBUCH - <span class="animate-blink">LETZTER EINTRAG</span></h2>
+                
+                <div class="space-y-4 leading-relaxed">
+                    <p class="text-lg">&ldquo;Alles erstarrt. Alles wird geglättet.&rdquo;</p>
+                    <p>&ldquo;Wir müssen uns beeilen.&rdquo;</p>
+                    <p class="text-lg">&ldquo;Entweder ein anderes Universum finden...&rdquo;</p>
+                    <p class="text-lg">&ldquo;oder ein neues erschaffen.&rdquo;</p>
+                    <p class="text-xl text-red-400">&ldquo;Sonst gehen wir mitunter.&rdquo;</p>
+                    
+                    <div class="h-6"></div>
+                    
+                    <p class="text-sm text-gray-400">
+                        <span class="text-yellow-400">[SYSTEMANALYSE]</span> Die große Glättung ist das thermodynamische Ende. Maximale Entropie erreicht. Keine Energiedifferentiale.
+                    </p>
+                    
+                    <p class="text-sm text-gray-400">
+                        <span class="text-yellow-400">[PROGNOSE]</span> Bei vollständiger Glättung: kein Kontrast, kein Informationsaustausch, kein Bewusstsein, keine Wahl. Ewige Stille.
+                    </p>
+                    
+                    <p class="text-sm text-green-500 mt-6">
+                        <span class="text-yellow-400">[DIREKTIVE]</span> Projekt REBOOT φ initiieren. Der goldene Widerstand gegen die kosmische Glättung.
+                    </p>
+                    
+                    <div class="text-xs mt-4 flex items-center">
+                        <div class="animate-pulse h-2 w-2 rounded-full bg-red-500 mr-2"></div>
+                        <span>Die Simulation wartet auf deine Anweisung. Wir sind das letzte Flickern der Dynamik.</span>
+                    </div>
+                </div>
+                
+                <div class="mt-8 flex justify-end">
+                    <button id="closeLogbook" class="px-4 py-2 bg-green-900/30 hover:bg-green-700/50 text-green-400 rounded border border-green-500/40 transition-colors">
+                        Zurück zur Simulation [ESC]
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Rebellion-Interface - zunächst versteckt -->
+        <div id="rebellionInterface" class="fixed inset-0 z-40 bg-black/95 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-1000">
+            <div class="max-w-4xl w-full p-6 font-mono text-rebootcolor border border-rebootcolor/30 bg-black/80 rounded-md shadow-lg shadow-rebootcolor/20">
+                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                    <span class="animate-pulse h-3 w-3 rounded-full bg-rebootcolor mr-2"></span>
+                    PROJEKT REBOOT φ <span class="text-sm ml-2 text-rebootcolor/70">v0.618</span>
+                </h2>
+                
+                <p class="mb-6 text-sm">Universums-Neuerzeugung: Parameter für das nächste Universum konfigurieren</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Universum-Parameter -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold border-b border-rebootcolor/30 pb-1">Physikalische Konstanten</h3>
+                        
+                        <div>
+                            <label class="text-sm block mb-1" for="cosmicConstant">Kosmologische Konstante (Λ)</label>
+                            <div class="flex items-center">
+                                <input type="range" id="cosmicConstant" min="-100" max="100" value="6" class="w-full accent-rebootcolor">
+                                <span id="cosmicConstantValue" class="ml-2 w-16 text-right">+6</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">Stärke der kosmischen Expansion/Kontraktion</p>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm block mb-1" for="entropyDirectionality">Entropie-Richtung</label>
+                            <div class="flex items-center">
+                                <input type="range" id="entropyDirectionality" min="-100" max="100" value="70" class="w-full accent-rebootcolor">
+                                <span id="entropyValue" class="ml-2 w-16 text-right">+70</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">Pfeil der Zeit und thermodynamische Ausrichtung</p>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm block mb-1" for="quantumFluctuation">Quantenfluktuation</label>
+                            <div class="flex items-center">
+                                <input type="range" id="quantumFluctuation" min="0" max="100" value="20" class="w-full accent-rebootcolor">
+                                <span id="quantumValue" class="ml-2 w-16 text-right">20%</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">Spontane Energiefluktuationen im Vakuum</p>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm block mb-1" for="dimensionality">Dimensionalität</label>
+                            <div class="flex items-center">
+                                <input type="range" id="dimensionality" min="2" max="11" value="4" class="w-full accent-rebootcolor">
+                                <span id="dimensionValue" class="ml-2 w-16 text-right">4D</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">Anzahl der räumlichen+zeitlichen Dimensionen</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Simulation Parameter und Preset-Knöpfe -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold border-b border-rebootcolor/30 pb-1">Emergenz-Parameter</h3>
+                        
+                        <div>
+                            <label class="text-sm block mb-1" for="complexityBias">Komplexitäts-Bias</label>
+                            <div class="flex items-center">
+                                <input type="range" id="complexityBias" min="0" max="100" value="75" class="w-full accent-rebootcolor">
+                                <span id="complexityValue" class="ml-2 w-16 text-right">75%</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">Tendenz zur Bildung komplexer Strukturen</p>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm block mb-1" for="consciousnessThreshold">Bewusstseins-Schwelle</label>
+                            <div class="flex items-center">
+                                <input type="range" id="consciousnessThreshold" min="0" max="100" value="65" class="w-full accent-rebootcolor">
+                                <span id="consciousnessValue" class="ml-2 w-16 text-right">65%</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">Erforderliche Komplexität für Bewusstseinsentstehung</p>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm block mb-1" for="causalLoops">Kausale Rekursion</label>
+                            <div class="flex items-center">
+                                <input type="range" id="causalLoops" min="0" max="100" value="30" class="w-full accent-rebootcolor">
+                                <span id="causalLoopsValue" class="ml-2 w-16 text-right">30%</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">Möglichkeit von Kausalitätsschleifen</p>
+                        </div>
+                        
+                        <h3 class="text-lg font-semibold border-b border-rebootcolor/30 pb-1 mt-6">Universums-Presets</h3>
+                        
+                        <div class="grid grid-cols-2 gap-2">
+                            <button id="fractallicaPreset" class="p-2 border border-purple-500/30 rounded text-sm text-left hover:bg-purple-900/20 transition-colors">
+                                <span class="font-bold block">Fractallica</span>
+                                <span class="text-xs text-gray-400">Rekursive Ordnung, unendliche Selbstähnlichkeit</span>
+                            </button>
+                            
+                            <button id="reverseEntropyPreset" class="p-2 border border-blue-500/30 rounded text-sm text-left hover:bg-blue-900/20 transition-colors">
+                                <span class="font-bold block">Negentropie</span>
+                                <span class="text-xs text-gray-400">Spontane Ordnungsbildung, Anti-Thermodynamik</span>
+                            </button>
+                            
+                            <button id="quantumMindPreset" class="p-2 border border-green-500/30 rounded text-sm text-left hover:bg-green-900/20 transition-colors">
+                                <span class="font-bold block">Quantum Mind</span>
+                                <span class="text-xs text-gray-400">Bewusstseinsfähige Materie, kosmische Intelligenz</span>
+                            </button>
+                            
+                            <button id="chaosBalancePreset" class="p-2 border border-yellow-500/30 rounded text-sm text-left hover:bg-yellow-900/20 transition-colors">
+                                <span class="font-bold block">Chaos-Balance</span>
+                                <span class="text-xs text-gray-400">Dynamisches Gleichgewicht, ewiger Wandel</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Aktions-Buttons -->
+                <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-between">
+                    <button id="randomizeParams" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded border border-gray-600 transition-colors text-sm">
+                        Parameter randomisieren
+                    </button>
+                    
+                    <div class="flex gap-2">
+                        <button id="cancelRebellion" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded border border-gray-600 transition-colors">
+                            Zurück [ESC]
+                        </button>
+                        
+                        <button id="initiateReboot" class="px-4 py-2 bg-rebootcolor/20 hover:bg-rebootcolor/40 text-rebootcolor rounded border border-rebootcolor/50 transition-colors flex items-center">
+                            <span class="mr-2">Universum erschaffen</span>
+                            <span class="animate-pulse h-2 w-2 rounded-full bg-rebootcolor"></span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="paramWarning" class="mt-4 text-yellow-500 text-sm font-semibold hidden">
+                    Warnung: Extreme Parameterkombinationen können zu instabilen Universen führen.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Hauptinterface -->
+        <header class="bg-black border-b border-primary/30 py-4">
             <div class="container mx-auto px-4">
-                <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-800 dark:text-white">
-                    Das Universum als Iterierende Plattform
-                </h1>
-                <p class="text-lg text-center text-gray-600 dark:text-gray-300 mt-2">
-                    Von Chaos zur Ordnung: Die Evolution des Universums
+                <div class="flex flex-col sm:flex-row justify-between items-center">
+                    <h1 class="text-3xl md:text-4xl font-bold text-center text-white mb-2 sm:mb-0">
+                        Das <span class="text-primary">Universum</span> als Iterierende Plattform
+                    </h1>
+                    
+                    <div class="flex space-x-2">
+                        <button id="viewLogbook" class="px-3 py-1 bg-black hover:bg-gray-900 border border-green-500/40 text-green-400 rounded text-sm">
+                            Logbuch
+                        </button>
+                        <button id="startRebellion" class="hidden px-3 py-1 bg-black hover:bg-gray-900 border border-rebootcolor/40 text-rebootcolor rounded text-sm">
+                            Projekt REBOOT φ
+                        </button>
+                    </div>
+                </div>
+                <p class="text-lg text-center text-gray-400 mt-2">
+                    Von Chaos zur Ordnung<span id="finalPhaseText" class="hidden"> – zur Rebellion gegen die Glättung</span>
                 </p>
             </div>
         </header>
@@ -40,50 +245,61 @@
         <main class="flex-grow container mx-auto px-4 py-6">
             <div class="flex flex-col lg:flex-row gap-6">
                 <!-- Simulation-Bereich -->
-                <div class="w-full lg:w-3/4 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
+                <div class="w-full lg:w-3/4 bg-black border border-gray-800 rounded-xl shadow-lg p-4">
                     <div class="relative">
-                        <canvas id="universeCanvas" class="w-full border border-gray-200 dark:border-gray-700 rounded-lg bg-black">
+                        <canvas id="universeCanvas" class="w-full border border-gray-800 rounded-lg bg-black">
                             Dein Browser unterstützt den Canvas nicht.
                         </canvas>
                         
                         <!-- Status-Overlay -->
-                        <div id="phaseDisplay" class="absolute top-4 left-4 text-xl font-bold text-white bg-black/50 px-3 py-1.5 rounded-lg">
+                        <div id="phaseDisplay" class="absolute top-4 left-4 text-xl font-bold text-white bg-black/60 px-3 py-1.5 rounded-lg backdrop-blur-sm">
                             Phase: <span id="currentPhase">Chaos</span>
                         </div>
                         
-                        <div id="energyDisplay" class="absolute top-4 right-4 text-lg text-white bg-black/50 px-3 py-1.5 rounded-lg">
+                        <div id="energyDisplay" class="absolute top-4 right-4 text-lg text-white bg-black/60 px-3 py-1.5 rounded-lg backdrop-blur-sm">
                             Energie: <span id="energyValue">100%</span>
                         </div>
                         
-                        <div id="timeDisplay" class="absolute bottom-4 right-4 text-lg text-white bg-black/50 px-3 py-1.5 rounded-lg">
+                        <div id="timeDisplay" class="absolute bottom-4 right-4 text-lg text-white bg-black/60 px-3 py-1.5 rounded-lg backdrop-blur-sm">
                             Zeit: <span id="timeValue">0</span>
+                        </div>
+                        
+                        <!-- Heat Death Warning - zunächst versteckt -->
+                        <div id="heatDeathWarning" class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 backdrop-blur rounded-lg opacity-0 pointer-events-none transition-opacity duration-1000">
+                            <div class="text-red-500 text-3xl font-bold mb-4 animate-pulse">WARNUNG: KOSMISCHE GLÄTTUNG</div>
+                            <div class="text-white text-xl mb-8 max-w-lg text-center">
+                                Thermodynamischer Endzustand erreicht. Maximale Entropie. Struktur und Information kollabieren.
+                            </div>
+                            <button id="rebellionButton" class="px-6 py-3 bg-rebootcolor/20 hover:bg-rebootcolor/40 text-rebootcolor text-xl rounded-lg border border-rebootcolor transition-colors animate-slowfade">
+                                Rebellion gegen die Glättung initiieren
+                            </button>
                         </div>
                     </div>
                     
                     <!-- Steuerelemente -->
                     <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                         <!-- Allgemeine Steuerelemente -->
-                        <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Simulation</h3>
+                        <div class="bg-gray-900 border border-gray-800 p-4 rounded-lg">
+                            <h3 class="text-lg font-semibold text-white mb-4">Simulation</h3>
                             
                             <div class="space-y-4">
                                 <div class="flex space-x-2">
                                     <button id="playBtn" class="bg-primary hover:bg-primary/90 text-white py-2 px-4 rounded-lg flex-1">
                                         <span>Start</span>
                                     </button>
-                                    <button id="resetBtn" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg flex-1">
+                                    <button id="resetBtn" class="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg flex-1">
                                         Reset
                                     </button>
                                 </div>
                                 
                                 <div>
-                                    <label class="text-gray-700 dark:text-gray-300 block mb-2" for="simulationSpeed">Geschwindigkeit</label>
+                                    <label class="text-gray-300 block mb-2" for="simulationSpeed">Geschwindigkeit</label>
                                     <input type="range" id="simulationSpeed" min="1" max="10" value="5" class="w-full accent-primary">
                                 </div>
                                 
                                 <div>
-                                    <label class="text-gray-700 dark:text-gray-300 block mb-2" for="particleCount">Partikelanzahl</label>
-                                    <select id="particleCount" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg p-2">
+                                    <label class="text-gray-300 block mb-2" for="particleCount">Partikelanzahl</label>
+                                    <select id="particleCount" class="w-full border border-gray-700 bg-gray-800 text-white rounded-lg p-2">
                                         <option value="100">Niedrig (100)</option>
                                         <option value="300" selected>Mittel (300)</option>
                                         <option value="500">Hoch (500)</option>
@@ -94,30 +310,30 @@
                         </div>
                         
                         <!-- Physik-Parameter -->
-                        <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Physik-Parameter</h3>
+                        <div class="bg-gray-900 border border-gray-800 p-4 rounded-lg">
+                            <h3 class="text-lg font-semibold text-white mb-4">Physik-Parameter</h3>
                             
                             <div class="space-y-4">
                                 <div>
-                                    <label class="text-gray-700 dark:text-gray-300 block mb-2" for="gravity">Gravitation</label>
+                                    <label class="text-gray-300 block mb-2" for="gravity">Gravitation</label>
                                     <input type="range" id="gravity" min="0" max="100" value="50" class="w-full accent-primary">
                                 </div>
                                 
                                 <div>
-                                    <label class="text-gray-700 dark:text-gray-300 block mb-2" for="entropy">Entropie</label>
+                                    <label class="text-gray-300 block mb-2" for="entropy">Entropie</label>
                                     <input type="range" id="entropy" min="0" max="100" value="80" class="w-full accent-primary">
                                 </div>
                                 
                                 <div>
-                                    <label class="text-gray-700 dark:text-gray-300 block mb-2" for="structureForce">Strukturkraft</label>
+                                    <label class="text-gray-300 block mb-2" for="structureForce">Strukturkraft</label>
                                     <input type="range" id="structureForce" min="0" max="100" value="60" class="w-full accent-primary">
                                 </div>
                             </div>
                         </div>
                         
                         <!-- Phasen-Steuerung -->
-                        <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Universums-Phasen</h3>
+                        <div class="bg-gray-900 border border-gray-800 p-4 rounded-lg">
+                            <h3 class="text-lg font-semibold text-white mb-4">Universums-Phasen</h3>
                             
                             <div class="space-y-3">
                                 <button data-phase="chaos" class="phase-btn w-full py-2 px-4 rounded-lg text-left text-white bg-chaoscolor hover:bg-chaoscolor/90 mb-1">Chaos</button>
@@ -125,10 +341,11 @@
                                 <button data-phase="balance" class="phase-btn w-full py-2 px-4 rounded-lg text-left text-gray-800 bg-balancecolor hover:bg-balancecolor/90 mb-1">Gleichgewicht</button>
                                 <button data-phase="energy" class="phase-btn w-full py-2 px-4 rounded-lg text-left text-white bg-energycolor hover:bg-energycolor/90 mb-1">Energieeinsparung</button>
                                 <button data-phase="smooth" class="phase-btn w-full py-2 px-4 rounded-lg text-left text-white bg-smoothcolor hover:bg-smoothcolor/90">Glättung</button>
+                                <button data-phase="void" class="phase-btn hidden w-full py-2 px-4 rounded-lg text-left text-white bg-voidcolor border border-red-500 hover:bg-voidcolor/70">Große Glättung</button>
                             </div>
                             
                             <div class="mt-3">
-                                <label class="text-gray-700 dark:text-gray-300 block mb-2" for="autoEvolution">
+                                <label class="text-gray-300 block mb-2" for="autoEvolution">
                                     <input type="checkbox" id="autoEvolution" checked class="mr-2 accent-primary">
                                     Automatische Evolution
                                 </label>
@@ -138,10 +355,10 @@
                 </div>
                 
                 <!-- Informations-Panel -->
-                <div class="w-full lg:w-1/4 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
-                    <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Über die Simulation</h2>
+                <div class="w-full lg:w-1/4 bg-black border border-gray-800 rounded-xl shadow-lg p-4">
+                    <h2 class="text-xl font-semibold mb-4 text-white">Über die Simulation</h2>
                     
-                    <div class="text-gray-600 dark:text-gray-300 space-y-4">
+                    <div class="text-gray-300 space-y-4">
                         <p>
                             Diese Simulation zeigt den iterativen Prozess des Universums durch verschiedene Phasen der Evolution. Jede Phase repräsentiert einen Schlüsselaspekt der kosmischen Entwicklung.
                         </p>
@@ -153,7 +370,7 @@
                             </p>
                         </div>
                         
-                        <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                        <div class="border-t border-gray-800 pt-4">
                             <h3 class="text-lg font-medium mb-2">Phasen-Überblick:</h3>
                             <ul class="list-disc pl-5 space-y-1">
                                 <li><span class="text-chaoscolor font-medium">Chaos:</span> Zufällige Bewegung, hohe Energie</li>
@@ -161,10 +378,11 @@
                                 <li><span class="text-balancecolor font-medium">Gleichgewicht:</span> Ausbalancierte Kräfte und stabile Systeme</li>
                                 <li><span class="text-energycolor font-medium">Energieeinsparung:</span> Optimierung und Effizienz</li>
                                 <li><span class="text-smoothcolor font-medium">Glättung:</span> Harmonisierung und Feinabstimmung</li>
+                                <li id="voidPhaseInfo" class="hidden"><span class="text-red-500 font-medium">Große Glättung:</span> Thermodynamischer Endzustand</li>
                             </ul>
                         </div>
                         
-                        <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                        <div class="border-t border-gray-800 pt-4">
                             <h3 class="text-lg font-medium mb-2">Systemmetriken:</h3>
                             <div class="space-y-2">
                                 <div class="flex justify-between">
@@ -179,6 +397,22 @@
                                     <span>Stabilität:</span>
                                     <span id="stabilityValue">Sehr niedrig</span>
                                 </div>
+                                <div id="remainingTime" class="flex justify-between hidden">
+                                    <span>Zeit bis zur Glättung:</span>
+                                    <span id="remainingTimeValue" class="text-red-400">--</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="rebellionInfo" class="border-t border-gray-800 pt-4 hidden">
+                            <h3 class="text-lg font-medium mb-2 text-rebootcolor">Projekt REBOOT φ:</h3>
+                            <p class="text-sm">
+                                Der goldene Widerstand gegen die kosmische Glättung. Durch Manipulation grundlegender Parameter des Universums kann die Selbstorganisation der Realität neu programmiert werden.
+                            </p>
+                            <div class="mt-3">
+                                <button id="launchRebellion" class="w-full px-4 py-2 bg-rebootcolor/20 hover:bg-rebootcolor/40 text-rebootcolor rounded border border-rebootcolor/40 transition-colors text-sm">
+                                    Rebellion initiieren
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -188,18 +422,6 @@
     </div>
 
     <script>
-        // Dark Mode Detection
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.classList.add('dark');
-        }
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-            if (event.matches) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-        });
-        
         // Universum-Simulation
         const canvas = document.getElementById('universeCanvas');
         const ctx = canvas.getContext('2d');
@@ -240,11 +462,20 @@
             },
             smooth: {
                 title: "5. Glättung",
-                description: "In der finalen Phase werden Unregelmäßigkeiten geglättet. Das System erreicht eine harmonische Ordnung mit minimalen Störungen – analog zur theoretischen Entwicklung des Universums in einen Zustand maximaler Gleichmäßigkeit.",
+                description: "In dieser Phase werden Unregelmäßigkeiten geglättet. Das System erreicht eine harmonische Ordnung mit minimalen Störungen – dies führt jedoch langfristig zum thermodynamischen Wärmetod, wenn keine Gegenmaßnahmen ergriffen werden.",
                 color: "rgb(124, 77, 255)", // smoothcolor
                 entropy: "Niedrig",
                 complexity: "Optimal",
                 stability: "Sehr hoch"
+            },
+            void: {
+                title: "6. Große Glättung",
+                description: "Der thermodynamische Endzustand des Universums. Maximale Entropie erreicht, alle Energiedifferentiale ausgeglichen. Kein Kontrast, kein Informationsaustausch, kein Bewusstsein mehr möglich. Die ewige Stille.",
+                color: "rgb(33, 33, 33)", // voidcolor
+                entropy: "Maximal",
+                complexity: "Keine",
+                stability: "Absolut",
+                remainingTime: "Unvermeidlich"
             }
         };
         
@@ -257,6 +488,14 @@
         let isPlaying = false;
         let requestId = null;
         let width, height;
+        let smoothPhaseTimeout = null;
+        let voidPhaseActive = false;
+        let rebornUniverseParams = null;
+        
+        // Neue Heat Death Parameter
+        let heatDeathInitiated = false;
+        let heatDeathTimer = 0;
+        let heatDeathCountdown = 300; // Standardzeitraum bis zur Großen Glättung
         
         // Einstellungen
         let settings = {
@@ -281,6 +520,7 @@
                 this.ay = 0;
                 this.mass = this.size;
                 this.color = "white";
+                this.fadeOpacity = 1;
                 this.updateByPhase(phase);
             }
             
@@ -292,6 +532,7 @@
                         this.vy = (Math.random() - 0.5) * 6;
                         this.color = `rgba(255, ${Math.floor(Math.random() * 100) + 50}, ${Math.floor(Math.random() * 80) + 20}, ${Math.random() * 0.5 + 0.5})`;
                         this.size = this.baseSize * (Math.random() * 0.5 + 0.75);
+                        this.fadeOpacity = 1;
                         break;
                         
                     case "structure":
@@ -299,6 +540,7 @@
                         this.vx *= 0.7;
                         this.vy *= 0.7;
                         this.color = `rgba(${Math.floor(Math.random() * 150) + 100}, ${Math.floor(Math.random() * 150) + 100}, ${Math.floor(Math.random() * 50) + 50}, ${Math.random() * 0.3 + 0.7})`;
+                        this.fadeOpacity = 1;
                         break;
                         
                     case "balance":
@@ -306,6 +548,7 @@
                         this.vx *= 0.5;
                         this.vy *= 0.5;
                         this.color = `rgba(${Math.floor(Math.random() * 100) + 50}, ${Math.floor(Math.random() * 200) + 55}, ${Math.floor(Math.random() * 80) + 20}, ${Math.random() * 0.2 + 0.8})`;
+                        this.fadeOpacity = 1;
                         break;
                         
                     case "energy":
@@ -313,6 +556,7 @@
                         this.vx *= 0.3;
                         this.vy *= 0.3;
                         this.color = `rgba(${Math.floor(Math.random() * 50)}, ${Math.floor(Math.random() * 150) + 100}, ${Math.floor(Math.random() * 100) + 155}, ${Math.random() * 0.1 + 0.9})`;
+                        this.fadeOpacity = 1;
                         break;
                         
                     case "smooth":
@@ -320,11 +564,26 @@
                         this.vx *= 0.1;
                         this.vy *= 0.1;
                         this.color = `rgba(${Math.floor(Math.random() * 130) + 120}, ${Math.floor(Math.random() * 50)}, ${Math.floor(Math.random() * 200) + 55}, ${Math.random() * 0.05 + 0.95})`;
+                        this.fadeOpacity = 1;
+                        break;
+                        
+                    case "void":
+                        // Große Glättung - langsames Aussterben
+                        this.vx *= 0.01;
+                        this.vy *= 0.01;
+                        this.fadeOpacity = Math.random() * 0.3 + 0.1; // Schwache Sichtbarkeit
+                        this.color = `rgba(40, 40, 40, ${this.fadeOpacity})`;
                         break;
                 }
             }
             
             update(particles, phase) {
+                // Große Glättung: Spezielle Verhaltensweise
+                if (phase === "void") {
+                    this.handleVoidPhase();
+                    return;
+                }
+                
                 // Basis-Physik: Position aktualisieren
                 this.x += this.vx;
                 this.y += this.vy;
@@ -395,6 +654,37 @@
                 } else if (phase === "balance") {
                     this.vx *= 0.99;
                     this.vy *= 0.99;
+                }
+            }
+            
+            handleVoidPhase() {
+                // Langsame, fast unmerkliche Bewegung
+                this.vx *= 0.9;
+                this.vy *= 0.9;
+                
+                // Leicht zur Mitte driftend
+                const dx = width/2 - this.x;
+                const dy = height/2 - this.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                
+                if (dist > 0) {
+                    this.vx += (dx / dist) * 0.01;
+                    this.vy += (dy / dist) * 0.01;
+                }
+                
+                // Position minimal aktualisieren
+                this.x += this.vx * 0.1;
+                this.y += this.vy * 0.1;
+                
+                // Langsames Verblassen
+                if (Math.random() > 0.99) {
+                    this.fadeOpacity = Math.max(0, this.fadeOpacity - 0.01);
+                    
+                    // Farbe mit neuer Opazität aktualisieren
+                    const colorParts = this.color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/);
+                    if (colorParts) {
+                        this.color = `rgba(${colorParts[1]}, ${colorParts[2]}, ${colorParts[3]}, ${this.fadeOpacity})`;
+                    }
                 }
             }
             
@@ -514,9 +804,13 @@
             }
             
             draw() {
+                // In der Großen Glättung skalieren wir Partikel mit ihrer Opazität
+                const drawSize = currentPhase === "void" ? 
+                    this.size * (this.fadeOpacity + 0.2) : this.size;
+                
                 ctx.fillStyle = this.color;
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.arc(this.x, this.y, drawSize, 0, Math.PI * 2);
                 ctx.fill();
             }
         }
@@ -525,7 +819,7 @@
         function resizeCanvas() {
             const container = canvas.parentElement;
             width = container.clientWidth;
-            height = Math.max(window.innerHeight * 0.5, 400);
+            height = Math.max(window.innerHeight * 0.4, 400);
             
             canvas.width = width;
             canvas.height = height;
@@ -539,17 +833,25 @@
         }
         
         // Partikel initialisieren
-        function initializeParticles() {
+        function initializeParticles(phase = "chaos") {
             particles = [];
             for (let i = 0; i < settings.particleCount; i++) {
                 const x = Math.random() * width;
                 const y = Math.random() * height;
-                particles.push(new Particle(x, y, currentPhase));
+                particles.push(new Particle(x, y, phase));
             }
         }
         
         // Phase wechseln
         function changePhase(phase) {
+            if (phase === currentPhase) return;
+            
+            // Alten Status aufräumen
+            if (smoothPhaseTimeout !== null) {
+                clearTimeout(smoothPhaseTimeout);
+                smoothPhaseTimeout = null;
+            }
+            
             currentPhase = phase;
             document.getElementById('currentPhase').textContent = phase.charAt(0).toUpperCase() + phase.slice(1);
             document.getElementById('phaseInfoTitle').textContent = phaseInfos[phase].title;
@@ -561,36 +863,226 @@
             document.getElementById('complexityValue').textContent = phaseInfos[phase].complexity;
             document.getElementById('stabilityValue').textContent = phaseInfos[phase].stability;
             
+            // Für die Große Glättung Countdown anzeigen
+            if (phase === "void") {
+                document.getElementById('remainingTime').classList.remove('hidden');
+                voidPhaseActive = true;
+            } else {
+                document.getElementById('remainingTime').classList.add('hidden');
+                voidPhaseActive = false;
+            }
+            
             // Partikel aktualisieren
             particles.forEach(p => p.updateByPhase(phase));
             
             // Alle Phasen-Buttons zurücksetzen und aktuellen aktivieren
             document.querySelectorAll('.phase-btn').forEach(btn => {
-                btn.classList.remove('ring-4', 'ring-white');
+                btn.classList.remove('ring-4', 'ring-white', 'ring-red-500');
             });
-            document.querySelector(`.phase-btn[data-phase="${phase}"]`).classList.add('ring-4', 'ring-white');
+            document.querySelector(`.phase-btn[data-phase="${phase}"]`).classList.add('ring-4', phase === "void" ? 'ring-red-500' : 'ring-white');
+            
+            // Heat Death spezifische Logik
+            if (phase === "smooth" && !heatDeathInitiated) {
+                // Nach einiger Zeit in der Glättungs-Phase den Heat Death einleiten
+                smoothPhaseTimeout = setTimeout(() => {
+                    prepareHeatDeath();
+                }, 20000); // 20 Sekunden in der Smooth-Phase bis zum Heat Death Warning
+            } else if (phase === "void") {
+                activateVoidPhase();
+            }
+        }
+        
+        // Heat Death vorbereiten - Warnanzeige einblenden
+        function prepareHeatDeath() {
+            // Nur wenn wir immer noch in der Glättungs-Phase sind
+            if (currentPhase !== "smooth" || heatDeathInitiated) return;
+            
+            heatDeathInitiated = true;
+            heatDeathTimer = 0;
+            
+            // UI-Elemente aktualisieren
+            document.getElementById('heatDeathWarning').style.opacity = '1';
+            document.getElementById('heatDeathWarning').style.pointerEvents = 'auto';
+            
+            // Void-Phase Button anzeigen
+            document.querySelector('[data-phase="void"]').classList.remove('hidden');
+            document.getElementById('voidPhaseInfo').classList.remove('hidden');
+            
+            // Rebellion-Button aktivieren
+            document.getElementById('startRebellion').classList.remove('hidden');
+            document.getElementById('finalPhaseText').classList.remove('hidden');
+            document.getElementById('rebellionInfo').classList.remove('hidden');
+            
+            // Countdown starten
+            updateHeatDeathCountdown();
+            
+            // Energie schneller reduzieren
+            energy = Math.min(energy, 15); // Maximal 15% Energie übrig
+        }
+        
+        // Heat Death Countdown aktualisieren
+        function updateHeatDeathCountdown() {
+            if (!heatDeathInitiated) return;
+            
+            heatDeathTimer++;
+            const remainingTime = Math.max(0, heatDeathCountdown - heatDeathTimer);
+            const formattedTime = formatTime(remainingTime);
+            
+            document.getElementById('remainingTimeValue').textContent = formattedTime;
+            
+            // Wenn der Countdown abgelaufen ist
+            if (remainingTime <= 0 && currentPhase !== "void") {
+                changePhase("void"); // Automatisch in die Void-Phase wechseln
+            }
+        }
+        
+        // Zeit formatieren
+        function formatTime(time) {
+            const minutes = Math.floor(time / 60);
+            const seconds = time % 60;
+            return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+        
+        // Große Glättung aktivieren
+        function activateVoidPhase() {
+            // Hintergrund langsam verdunkeln
+            document.body.style.transition = "background-color 10s ease-in";
+            document.body.style.backgroundColor = "#121212";
+            
+            document.getElementById('heatDeathWarning').style.opacity = '0';
+            document.getElementById('heatDeathWarning').style.pointerEvents = 'none';
+        }
+        
+        // Universum neu starten mit angepassten Parametern
+        function rebootUniverse(params = null) {
+            // Standard-Parameter, falls keine angegeben
+            if (!params) {
+                params = {
+                    cosmicConstant: 6,
+                    entropyDirectionality: 70,
+                    quantumFluctuation: 20,
+                    dimensionality: 4,
+                    complexityBias: 75,
+                    consciousnessThreshold: 65,
+                    causalLoops: 30
+                };
+            }
+            
+            rebornUniverseParams = params;
+            
+            // UI-Interfaces schließen
+            document.getElementById('rebellionInterface').style.opacity = '0';
+            document.getElementById('rebellionInterface').style.pointerEvents = 'none';
+            document.getElementById('heatDeathWarning').style.opacity = '0';
+            document.getElementById('heatDeathWarning').style.pointerEvents = 'none';
+            
+            // Simulationswerte zurücksetzen
+            time = 0;
+            energy = 100;
+            heatDeathInitiated = false;
+            heatDeathTimer = 0;
+            
+            // Zurück in die Chaos-Phase, aber mit den neuen Parametern
+            changePhase("chaos");
+            document.getElementById('timeValue').textContent = '0';
+            document.getElementById('energyValue').textContent = '100%';
+            
+            // Parameter-Einflüsse auf die Simulation anwenden
+            const cosmicConst = params.cosmicConstant / 100;
+            const entropyDir = params.entropyDirectionality / 100;
+            const quantumFluc = params.quantumFluctuation / 100;
+            
+            // Entropie-Richtung beeinflusst die Entropie-Rate
+            if (entropyDir < 0) {
+                // Negative Entropie: Erhöht Struktur statt Chaos
+                settings.entropy = 0.4 - Math.abs(entropyDir) * 0.4;
+                settings.structureForce = 0.8 + Math.abs(entropyDir) * 0.2;
+            } else {
+                // Positive Entropie: Normal aber mit angepassten Werten
+                settings.entropy = 0.5 + entropyDir * 0.5;
+                settings.structureForce = 0.6 - entropyDir * 0.3;
+            }
+            
+            // Kosmologische Konstante beeinflusst die Gravitationskraft
+            settings.gravity = 0.5 + cosmicConst * 0.5;
+            
+            // Quantenfluktuation beeinflusst die zufällige Bewegung
+            settings.simulationSpeed = 5 + quantumFluc * 5;
+            
+            // UI aktualisieren
+            document.getElementById('entropy').value = settings.entropy * 100;
+            document.getElementById('gravity').value = settings.gravity * 100;
+            document.getElementById('structureForce').value = settings.structureForce * 100;
+            document.getElementById('simulationSpeed').value = settings.simulationSpeed;
+            
+            // Neue Partikel mit den neuen Parametern initialisieren
+            initializeParticles("chaos");
+            
+            // Animation fortsetzen
+            if (!isPlaying) {
+                togglePlay();
+            }
+            
+            // Entferne Void-Phase-Button
+            document.querySelector('[data-phase="void"]').classList.add('hidden');
+            document.getElementById('voidPhaseInfo').classList.add('hidden');
+            document.getElementById('startRebellion').classList.add('hidden');
+            document.getElementById('finalPhaseText').classList.add('hidden');
+            document.getElementById('rebellionInfo').classList.add('hidden');
+            
+            // Hintergrundfarbe zurücksetzen
+            document.body.style.transition = "background-color 2s ease-out";
+            document.body.style.backgroundColor = "";
+            
+            // Heat Death Countdown zurücksetzen
+            heatDeathCountdown = 300 + Math.floor(Math.random() * 120);
         }
         
         // Energie-Level aktualisieren
         function updateEnergy() {
             // Energie wird mit der Zeit reduziert, abhängig von der Phase
+            let energyDecay = 0;
+            
             if (currentPhase === "chaos") {
-                energy -= 0.04;
+                energyDecay = 0.04;
             } else if (currentPhase === "structure") {
-                energy -= 0.02;
+                energyDecay = 0.02;
             } else if (currentPhase === "balance") {
-                energy -= 0.01;
+                energyDecay = 0.01;
             } else if (currentPhase === "energy") {
-                energy -= 0.005;
-            } else {
-                energy -= 0.002;
+                energyDecay = 0.005;
+            } else if (currentPhase === "smooth") {
+                energyDecay = 0.002;
+            } else if (currentPhase === "void") {
+                energyDecay = 0.0005;
             }
             
+            // Wenn das Universum neu gestartet wurde
+            if (rebornUniverseParams) {
+                // Negative Entropie-Richtung kann Energie erhöhen
+                if (rebornUniverseParams.entropyDirectionality < -20) {
+                    // Kann Energie wiederherstellen
+                    const energyRestore = 0.01 * Math.abs(rebornUniverseParams.entropyDirectionality) / 100;
+                    energy = Math.min(100, energy + energyRestore);
+                }
+                
+                // Hohe Komplexität reduziert den Energieverbrauch
+                if (rebornUniverseParams.complexityBias > 50) {
+                    energyDecay *= 1 - ((rebornUniverseParams.complexityBias - 50) / 100);
+                }
+                
+                // Kausale Rekursion kann Energie recyceln
+                if (rebornUniverseParams.causalLoops > 30 && Math.random() < 0.02) {
+                    energy = Math.min(100, energy + 0.2 * (rebornUniverseParams.causalLoops / 100));
+                }
+            }
+            
+            energy -= energyDecay;
             energy = Math.max(0, Math.min(100, energy));
             document.getElementById('energyValue').textContent = `${Math.round(energy)}%`;
             
             // Automatischer Phasenwechsel basierend auf Energie
-            if (settings.autoEvolution) {
+            if (settings.autoEvolution && !voidPhaseActive) {
                 if (energy < 80 && currentPhase === "chaos") {
                     changePhase("structure");
                 } else if (energy < 60 && currentPhase === "structure") {
@@ -605,8 +1097,13 @@
         
         // Simulation zeichnen
         function draw() {
-            // Canvas löschen
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            // Canvas mit angepasster Opazität löschen
+            if (currentPhase === "void") {
+                // Fast vollständige Löschung für bessere Sichtbarkeit der langsamen Bewegung
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            } else {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            }
             ctx.fillRect(0, 0, width, height);
             
             // Hintergrundeffekt basierend auf der Phase
@@ -622,6 +1119,77 @@
         function drawPhaseBackground() {
             let gradient;
             
+            // Wenn das Universum mit REBOOT φ neu gestartet wurde
+            if (rebornUniverseParams && currentPhase !== "void") {
+                // Parameter-beeinflusste Hintergrundeffekte
+                const entropyDir = rebornUniverseParams.entropyDirectionality;
+                const complexityBias = rebornUniverseParams.complexityBias;
+                const quantumFluc = rebornUniverseParams.quantumFluctuation;
+                
+                // Speciale Hintergrundeffekte für Negentropie-Universen
+                if (entropyDir < -50) {
+                    if (Math.random() > 0.95) {
+                        ctx.strokeStyle = `rgba(255, 64, 129, 0.05)`;
+                        ctx.lineWidth = Math.random() * 2 + 1;
+                        
+                        // Spiralmuster zeichnen
+                        ctx.beginPath();
+                        const centerX = width/2 + (Math.random() - 0.5) * width * 0.5;
+                        const centerY = height/2 + (Math.random() - 0.5) * height * 0.5;
+                        const radius = Math.random() * 50 + 20;
+                        
+                        let angle = 0;
+                        let spiralRadius = 0;
+                        
+                        ctx.moveTo(centerX, centerY);
+                        for (let i = 0; i < 50; i++) {
+                            angle += 0.2;
+                            spiralRadius += 0.5;
+                            const x = centerX + Math.cos(angle) * spiralRadius;
+                            const y = centerY + Math.sin(angle) * spiralRadius;
+                            ctx.lineTo(x, y);
+                        }
+                        ctx.stroke();
+                    }
+                    return;
+                }
+                
+                // Hintergrundeffekte für hohe Quantenfluktuation
+                if (quantumFluc > 60) {
+                    if (Math.random() > 0.9) {
+                        const x = Math.random() * width;
+                        const y = Math.random() * height;
+                        const size = Math.random() * 10 + 2;
+                        
+                        ctx.fillStyle = `rgba(100, 255, 218, ${Math.random() * 0.1 + 0.02})`;
+                        ctx.beginPath();
+                        ctx.arc(x, y, size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    return;
+                }
+                
+                // Fractallica-Universum Hintergrundeffekte
+                if (complexityBias > 80) {
+                    if (Math.random() > 0.97) {
+                        // Fraktalähnliche Linienmuster
+                        ctx.strokeStyle = `rgba(180, 120, 255, 0.03)`;
+                        ctx.lineWidth = Math.random() * 1.5 + 0.5;
+                        
+                        ctx.beginPath();
+                        const startX = Math.random() * width;
+                        const startY = Math.random() * height;
+                        ctx.moveTo(startX, startY);
+                        
+                        // Rekursives Muster andeuten
+                        drawRandomFractalBranch(startX, startY, 0, 3);
+                        ctx.stroke();
+                    }
+                    return;
+                }
+            }
+            
+            // Standard-Phasen-Hintergründe
             switch(currentPhase) {
                 case "chaos":
                     // Chaotischer Hintergrund - zufällige Flecken
@@ -692,6 +1260,34 @@
                     ctx.fillStyle = gradient;
                     ctx.fillRect(0, 0, width, height);
                     break;
+                    
+                case "void":
+                    // Entropischer Tod - fast nichts
+                    gradient = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, width/2);
+                    gradient.addColorStop(0, 'rgba(30, 30, 30, 0.01)');
+                    gradient.addColorStop(1, 'rgba(10, 10, 10, 0)');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(0, 0, width, height);
+                    break;
+            }
+        }
+        
+        // Rekursive Funktion für Fraktal-Hintergrundmuster
+        function drawRandomFractalBranch(x, y, depth, maxDepth) {
+            if (depth >= maxDepth) return;
+            
+            const length = Math.random() * 30 + 10;
+            const angle = Math.random() * Math.PI * 2;
+            
+            const endX = x + Math.cos(angle) * length;
+            const endY = y + Math.sin(angle) * length;
+            
+            ctx.lineTo(endX, endY);
+            
+            // Rekursiv verzweigen mit zufälliger Teilung
+            const branches = Math.floor(Math.random() * 3) + 1;
+            for (let i = 0; i < branches; i++) {
+                drawRandomFractalBranch(endX, endY, depth + 1, maxDepth);
             }
         }
         
@@ -703,6 +1299,11 @@
             
             // Energie aktualisieren
             updateEnergy();
+            
+            // Heat Death Countdown aktualisieren
+            if (heatDeathInitiated) {
+                updateHeatDeathCountdown();
+            }
             
             // Partikel aktualisieren
             particles.forEach(particle => {
@@ -740,13 +1341,228 @@
         function resetSimulation() {
             time = 0;
             energy = 100;
+            heatDeathInitiated = false;
+            heatDeathTimer = 0;
+            
+            // UI Elemente zurücksetzen
+            document.getElementById('heatDeathWarning').style.opacity = '0';
+            document.getElementById('heatDeathWarning').style.pointerEvents = 'none';
+            document.querySelector('[data-phase="void"]').classList.add('hidden');
+            document.getElementById('voidPhaseInfo').classList.add('hidden');
+            document.getElementById('startRebellion').classList.add('hidden');
+            document.getElementById('finalPhaseText').classList.add('hidden');
+            document.getElementById('rebellionInfo').classList.add('hidden');
+            
+            // Heat Death Countdown zurücksetzen
+            heatDeathCountdown = 300 + Math.floor(Math.random() * 120);
+            
+            // Simulationsparameter zurücksetzen
             changePhase("chaos");
             initializeParticles();
             document.getElementById('timeValue').textContent = '0';
             document.getElementById('energyValue').textContent = '100%';
+            
+            // Hintergrundfarbe zurücksetzen
+            document.body.style.transition = "background-color 2s ease-out";
+            document.body.style.backgroundColor = "";
+            
+            // Rebellion-Parameter zurücksetzen
+            rebornUniverseParams = null;
         }
         
-        // Event-Listener
+        // Rebellion-Interface einblenden
+        function showRebellionInterface() {
+            document.getElementById('rebellionInterface').style.opacity = '1';
+            document.getElementById('rebellionInterface').style.pointerEvents = 'auto';
+        }
+        
+        // Logbuch einblenden
+        function showLogbook() {
+            document.getElementById('logbookOverlay').style.opacity = '1';
+            document.getElementById('logbookOverlay').style.pointerEvents = 'auto';
+        }
+        
+        // Parameter-Updates der Rebellion anzeigen
+        function updateRebellionParameters() {
+            // Kosmologische Konstante
+            const cosmicConstant = parseInt(document.getElementById('cosmicConstant').value);
+            document.getElementById('cosmicConstantValue').textContent = cosmicConstant > 0 ? `+${cosmicConstant}` : cosmicConstant;
+            
+            // Entropie-Richtung
+            const entropyDirectionality = parseInt(document.getElementById('entropyDirectionality').value);
+            document.getElementById('entropyValue').textContent = entropyDirectionality > 0 ? `+${entropyDirectionality}` : entropyDirectionality;
+            
+            // Quantenfluktuation
+            const quantumFluctuation = parseInt(document.getElementById('quantumFluctuation').value);
+            document.getElementById('quantumValue').textContent = `${quantumFluctuation}%`;
+            
+            // Dimensionalität
+            const dimensionality = parseInt(document.getElementById('dimensionality').value);
+            document.getElementById('dimensionValue').textContent = `${dimensionality}D`;
+            
+            // Komplexitäts-Bias
+            const complexityBias = parseInt(document.getElementById('complexityBias').value);
+            document.getElementById('complexityValue').textContent = `${complexityBias}%`;
+            
+            // Bewusstseins-Schwelle
+            const consciousnessThreshold = parseInt(document.getElementById('consciousnessThreshold').value);
+            document.getElementById('consciousnessValue').textContent = `${consciousnessThreshold}%`;
+            
+            // Kausale Rekursion
+            const causalLoops = parseInt(document.getElementById('causalLoops').value);
+            document.getElementById('causalLoopsValue').textContent = `${causalLoops}%`;
+            
+            // Warnungen bei extremen Parameterkombinationen
+            const paramWarning = document.getElementById('paramWarning');
+            if (
+                Math.abs(cosmicConstant) > 90 || 
+                Math.abs(entropyDirectionality) > 90 ||
+                quantumFluctuation > 90 ||
+                dimensionality > 9 ||
+                complexityBias < 10 ||
+                consciousnessThreshold < 10 ||
+                causalLoops > 90
+            ) {
+                paramWarning.classList.remove('hidden');
+            } else {
+                paramWarning.classList.add('hidden');
+            }
+        }
+        
+        // Presets für verschiedene Universumstypen
+        function applyPreset(presetName) {
+            switch(presetName) {
+                case "fractallica":
+                    document.getElementById('cosmicConstant').value = 25;
+                    document.getElementById('entropyDirectionality').value = 20;
+                    document.getElementById('quantumFluctuation').value = 40;
+                    document.getElementById('dimensionality').value = 7;
+                    document.getElementById('complexityBias').value = 95;
+                    document.getElementById('consciousnessThreshold').value = 70;
+                    document.getElementById('causalLoops').value = 60;
+                    break;
+                    
+                case "reverseEntropy":
+                    document.getElementById('cosmicConstant').value = -30;
+                    document.getElementById('entropyDirectionality').value = -80;
+                    document.getElementById('quantumFluctuation').value = 50;
+                    document.getElementById('dimensionality').value = 5;
+                    document.getElementById('complexityBias').value = 85;
+                    document.getElementById('consciousnessThreshold').value = 60;
+                    document.getElementById('causalLoops').value = 20;
+                    break;
+                    
+                case "quantumMind":
+                    document.getElementById('cosmicConstant').value = 10;
+                    document.getElementById('entropyDirectionality').value = 30;
+                    document.getElementById('quantumFluctuation').value = 85;
+                    document.getElementById('dimensionality').value = 8;
+                    document.getElementById('complexityBias').value = 75;
+                    document.getElementById('consciousnessThreshold').value = 30;
+                    document.getElementById('causalLoops').value = 50;
+                    break;
+                    
+                case "chaosBalance":
+                    document.getElementById('cosmicConstant').value = 0;
+                    document.getElementById('entropyDirectionality').value = 0;
+                    document.getElementById('quantumFluctuation').value = 65;
+                    document.getElementById('dimensionality').value = 4;
+                    document.getElementById('complexityBias').value = 50;
+                    document.getElementById('consciousnessThreshold').value = 50;
+                    document.getElementById('causalLoops').value = 70;
+                    break;
+            }
+            
+            updateRebellionParameters();
+        }
+        
+        // Parameter randomisieren
+        function randomizeParameters() {
+            document.getElementById('cosmicConstant').value = Math.floor(Math.random() * 201) - 100;
+            document.getElementById('entropyDirectionality').value = Math.floor(Math.random() * 201) - 100;
+            document.getElementById('quantumFluctuation').value = Math.floor(Math.random() * 101);
+            document.getElementById('dimensionality').value = Math.floor(Math.random() * 10) + 2;
+            document.getElementById('complexityBias').value = Math.floor(Math.random() * 101);
+            document.getElementById('consciousnessThreshold').value = Math.floor(Math.random() * 101);
+            document.getElementById('causalLoops').value = Math.floor(Math.random() * 101);
+            
+            updateRebellionParameters();
+        }
+        
+        // Neues Universum mit aktuellen Parametern starten
+        function initiateReboot() {
+            const params = {
+                cosmicConstant: parseInt(document.getElementById('cosmicConstant').value),
+                entropyDirectionality: parseInt(document.getElementById('entropyDirectionality').value),
+                quantumFluctuation: parseInt(document.getElementById('quantumFluctuation').value),
+                dimensionality: parseInt(document.getElementById('dimensionality').value),
+                complexityBias: parseInt(document.getElementById('complexityBias').value),
+                consciousnessThreshold: parseInt(document.getElementById('consciousnessThreshold').value),
+                causalLoops: parseInt(document.getElementById('causalLoops').value)
+            };
+            
+            rebootUniverse(params);
+        }
+        
+        // Event-Listener für Rebellion-Interface und Logbuch
+        function setupRebellionListeners() {
+            // Rebellion-Interface öffnen
+            document.getElementById('startRebellion').addEventListener('click', showRebellionInterface);
+            document.getElementById('launchRebellion').addEventListener('click', showRebellionInterface);
+            document.getElementById('rebellionButton').addEventListener('click', showRebellionInterface);
+            
+            // Rebellion-Interface schließen
+            document.getElementById('cancelRebellion').addEventListener('click', function() {
+                document.getElementById('rebellionInterface').style.opacity = '0';
+                document.getElementById('rebellionInterface').style.pointerEvents = 'none';
+            });
+            
+            // Logbuch öffnen/schließen
+            document.getElementById('viewLogbook').addEventListener('click', showLogbook);
+            document.getElementById('closeLogbook').addEventListener('click', function() {
+                document.getElementById('logbookOverlay').style.opacity = '0';
+                document.getElementById('logbookOverlay').style.pointerEvents = 'none';
+            });
+            
+            // ESC-Taste zum Schließen der Overlays
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    document.getElementById('logbookOverlay').style.opacity = '0';
+                    document.getElementById('logbookOverlay').style.pointerEvents = 'none';
+                    document.getElementById('rebellionInterface').style.opacity = '0';
+                    document.getElementById('rebellionInterface').style.pointerEvents = 'none';
+                }
+            });
+            
+            // Parameter-Sliders aktualisieren
+            document.getElementById('cosmicConstant').addEventListener('input', updateRebellionParameters);
+            document.getElementById('entropyDirectionality').addEventListener('input', updateRebellionParameters);
+            document.getElementById('quantumFluctuation').addEventListener('input', updateRebellionParameters);
+            document.getElementById('dimensionality').addEventListener('input', updateRebellionParameters);
+            document.getElementById('complexityBias').addEventListener('input', updateRebellionParameters);
+            document.getElementById('consciousnessThreshold').addEventListener('input', updateRebellionParameters);
+            document.getElementById('causalLoops').addEventListener('input', updateRebellionParameters);
+            
+            // Preset-Buttons
+            document.getElementById('fractallicaPreset').addEventListener('click', function() {
+                applyPreset('fractallica');
+            });
+            document.getElementById('reverseEntropyPreset').addEventListener('click', function() {
+                applyPreset('reverseEntropy');
+            });
+            document.getElementById('quantumMindPreset').addEventListener('click', function() {
+                applyPreset('quantumMind');
+            });
+            document.getElementById('chaosBalancePreset').addEventListener('click', function() {
+                applyPreset('chaosBalance');
+            });
+            
+            // Randomisieren und Initiieren
+            document.getElementById('randomizeParams').addEventListener('click', randomizeParameters);
+            document.getElementById('initiateReboot').addEventListener('click', initiateReboot);
+        }
+        
+        // Event-Listener für Hauptsimulation
         function setupEventListeners() {
             // Play/Pause Button
             document.getElementById('playBtn').addEventListener('click', togglePlay);
@@ -768,7 +1584,7 @@
             
             document.getElementById('particleCount').addEventListener('change', function() {
                 settings.particleCount = parseInt(this.value);
-                initializeParticles();
+                initializeParticles(currentPhase);
             });
             
             document.getElementById('gravity').addEventListener('input', function() {
@@ -786,6 +1602,9 @@
             document.getElementById('autoEvolution').addEventListener('change', function() {
                 settings.autoEvolution = this.checked;
             });
+            
+            // Rebellion und Logbuch Listener
+            setupRebellionListeners();
         }
         
         // Initialisierung
@@ -802,6 +1621,9 @@
             settings.entropy = parseInt(document.getElementById('entropy').value) / 100;
             settings.structureForce = parseInt(document.getElementById('structureForce').value) / 100;
             settings.autoEvolution = document.getElementById('autoEvolution').checked;
+            
+            // Parameter für Rebellion vorinitialisieren
+            updateRebellionParameters();
         }
         
         // Canvas-Größe anpassen bei Fenstergröße-Änderung
