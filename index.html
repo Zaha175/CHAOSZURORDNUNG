@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Das Universum als Iterierende Plattform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        secondary: '#FF6B6B',
+                        chaoscolor: '#FF5252',
+                        structurecolor: '#FFD740',
+                        balancecolor: '#64DD17',
+                        energycolor: '#00B0FF',
+                        smoothcolor: '#7C4DFF'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white dark:bg-gray-900 transition-colors duration-300">
+    <div class="min-h-screen flex flex-col">
+        <header class="bg-primary/10 dark:bg-primary/20 py-4">
+            <div class="container mx-auto px-4">
+                <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-800 dark:text-white">
+                    Das Universum als Iterierende Plattform
+                </h1>
+                <p class="text-lg text-center text-gray-600 dark:text-gray-300 mt-2">
+                    Von Chaos zur Ordnung: Die Evolution des Universums
+                </p>
+            </div>
+        </header>
+
+        <main class="flex-grow container mx-auto px-4 py-6">
+            <div class="flex flex-col lg:flex-row gap-6">
+                <!-- Simulation-Bereich -->
+                <div class="w-full lg:w-3/4 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
+                    <div class="relative">
+                        <canvas id="universeCanvas" class="w-full border border-gray-200 dark:border-gray-700 rounded-lg bg-black">
+                            Dein Browser unterstützt den Canvas nicht.
+                        </canvas>
+                        
+                        <!-- Status-Overlay -->
+                        <div id="phaseDisplay" class="absolute top-4 left-4 text-xl font-bold text-white bg-black/50 px-3 py-1.5 rounded-lg">
+                            Phase: <span id="currentPhase">Chaos</span>
+                        </div>
+                        
+                        <div id="energyDisplay" class="absolute top-4 right-4 text-lg text-white bg-black/50 px-3 py-1.5 rounded-lg">
+                            Energie: <span id="energyValue">100%</span>
+                        </div>
+                        
+                        <div id="timeDisplay" class="absolute bottom-4 right-4 text-lg text-white bg-black/50 px-3 py-1.5 rounded-lg">
+                            Zeit: <span id="timeValue">0</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Steuerelemente -->
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Allgemeine Steuerelemente -->
+                        <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Simulation</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="flex space-x-2">
+                                    <button id="playBtn" class="bg-primary hover:bg-primary/90 text-white py-2 px-4 rounded-lg flex-1">
+                                        <span>Start</span>
+                                    </button>
+                                    <button id="resetBtn" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg flex-1">
+                                        Reset
+                                    </button>
+                                </div>
+                                
+                                <div>
+                                    <label class="text-gray-700 dark:text-gray-300 block mb-2" for="simulationSpeed">Geschwindigkeit</label>
+                                    <input type="range" id="simulationSpeed" min="1" max="10" value="5" class="w-full accent-primary">
+                                </div>
+                                
+                                <div>
+                                    <label class="text-gray-700 dark:text-gray-300 block mb-2" for="particleCount">Partikelanzahl</label>
+                                    <select id="particleCount" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg p-2">
+                                        <option value="100">Niedrig (100)</option>
+                                        <option value="300" selected>Mittel (300)</option>
+                                        <option value="500">Hoch (500)</option>
+                                        <option value="1000">Ultra (1000)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Physik-Parameter -->
+                        <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Physik-Parameter</h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="text-gray-700 dark:text-gray-300 block mb-2" for="gravity">Gravitation</label>
+                                    <input type="range" id="gravity" min="0" max="100" value="50" class="w-full accent-primary">
+                                </div>
+                                
+                                <div>
+                                    <label class="text-gray-700 dark:text-gray-300 block mb-2" for="entropy">Entropie</label>
+                                    <input type="range" id="entropy" min="0" max="100" value="80" class="w-full accent-primary">
+                                </div>
+                                
+                                <div>
+                                    <label class="text-gray-700 dark:text-gray-300 block mb-2" for="structureForce">Strukturkraft</label>
+                                    <input type="range" id="structureForce" min="0" max="100" value="60" class="w-full accent-primary">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Phasen-Steuerung -->
+                        <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Universums-Phasen</h3>
+                            
+                            <div class="space-y-3">
+                                <button data-phase="chaos" class="phase-btn w-full py-2 px-4 rounded-lg text-left text-white bg-chaoscolor hover:bg-chaoscolor/90 mb-1">Chaos</button>
+                                <button data-phase="structure" class="phase-btn w-full py-2 px-4 rounded-lg text-left text-gray-800 bg-structurecolor hover:bg-structurecolor/90 mb-1">Struktur</button>
+                                <button data-phase="balance" class="phase-btn w-full py-2 px-4 rounded-lg text-left text-gray-800 bg-balancecolor hover:bg-balancecolor/90 mb-1">Gleichgewicht</button>
+                                <button data-phase="energy" class="phase-btn w-full py-2 px-4 rounded-lg text-left text-white bg-energycolor hover:bg-energycolor/90 mb-1">Energieeinsparung</button>
+                                <button data-phase="smooth" class="phase-btn w-full py-2 px-4 rounded-lg text-left text-white bg-smoothcolor hover:bg-smoothcolor/90">Glättung</button>
+                            </div>
+                            
+                            <div class="mt-3">
+                                <label class="text-gray-700 dark:text-gray-300 block mb-2" for="autoEvolution">
+                                    <input type="checkbox" id="autoEvolution" checked class="mr-2 accent-primary">
+                                    Automatische Evolution
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Informations-Panel -->
+                <div class="w-full lg:w-1/4 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Über die Simulation</h2>
+                    
+                    <div class="text-gray-600 dark:text-gray-300 space-y-4">
+                        <p>
+                            Diese Simulation zeigt den iterativen Prozess des Universums durch verschiedene Phasen der Evolution. Jede Phase repräsentiert einen Schlüsselaspekt der kosmischen Entwicklung.
+                        </p>
+                        
+                        <div id="phaseInfo">
+                            <h3 id="phaseInfoTitle" class="text-lg font-medium mb-2 text-chaoscolor">1. Chaos</h3>
+                            <p id="phaseInfoDesc">
+                                Am Anfang war Chaos – zufällige Bewegung und hohe Entropie charakterisieren diese Phase. Partikel bewegen sich in alle Richtungen ohne erkennbares Muster, ähnlich dem frühen Universum nach dem Urknall.
+                            </p>
+                        </div>
+                        
+                        <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                            <h3 class="text-lg font-medium mb-2">Phasen-Überblick:</h3>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><span class="text-chaoscolor font-medium">Chaos:</span> Zufällige Bewegung, hohe Energie</li>
+                                <li><span class="text-structurecolor font-medium">Struktur:</span> Bildung von Mustern und Clustern</li>
+                                <li><span class="text-balancecolor font-medium">Gleichgewicht:</span> Ausbalancierte Kräfte und stabile Systeme</li>
+                                <li><span class="text-energycolor font-medium">Energieeinsparung:</span> Optimierung und Effizienz</li>
+                                <li><span class="text-smoothcolor font-medium">Glättung:</span> Harmonisierung und Feinabstimmung</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                            <h3 class="text-lg font-medium mb-2">Systemmetriken:</h3>
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <span>Entropie:</span>
+                                    <span id="entropyValue">Hoch</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Strukturkomplexität:</span>
+                                    <span id="complexityValue">Niedrig</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Stabilität:</span>
+                                    <span id="stabilityValue">Sehr niedrig</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Dark Mode Detection
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+        
+        // Universum-Simulation
+        const canvas = document.getElementById('universeCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Phase-Informationen
+        const phaseInfos = {
+            chaos: {
+                title: "1. Chaos",
+                description: "Am Anfang war Chaos – zufällige Bewegung und hohe Entropie charakterisieren diese Phase. Partikel bewegen sich in alle Richtungen ohne erkennbares Muster, ähnlich dem frühen Universum nach dem Urknall.",
+                color: "rgb(255, 82, 82)", // chaoscolor
+                entropy: "Hoch",
+                complexity: "Niedrig",
+                stability: "Sehr niedrig"
+            },
+            structure: {
+                title: "2. Struktur",
+                description: "Aus dem Chaos beginnen sich Strukturen zu bilden. Gravitation und andere Kräfte führen zur Entstehung von Clustern und Mustern, vergleichbar mit der Bildung erster Galaxien und Sternsysteme.",
+                color: "rgb(255, 215, 64)", // structurecolor
+                entropy: "Verringernd",
+                complexity: "Mittel",
+                stability: "Niedrig"
+            },
+            balance: {
+                title: "3. Gleichgewicht",
+                description: "Die Kräfte des Universums finden ein Gleichgewicht. Stabilere Strukturen entstehen, die die Balance zwischen verschiedenen physikalischen Kräften repräsentieren – wie Planetensysteme oder stabile Sternformationen.",
+                color: "rgb(100, 221, 23)", // balancecolor
+                entropy: "Mittelhoch",
+                complexity: "Hoch",
+                stability: "Moderat"
+            },
+            energy: {
+                title: "4. Energieeinsparung",
+                description: "Das System optimiert seinen Energieverbrauch. Bewegungen werden effizienter, Ressourcen sparsamer eingesetzt. Dies spiegelt die natürliche Tendenz des Universums wider, den Weg des geringsten Widerstands zu finden.",
+                color: "rgb(0, 176, 255)", // energycolor
+                entropy: "Mittelniedrig",
+                complexity: "Sehr hoch",
+                stability: "Hoch"
+            },
+            smooth: {
+                title: "5. Glättung",
+                description: "In der finalen Phase werden Unregelmäßigkeiten geglättet. Das System erreicht eine harmonische Ordnung mit minimalen Störungen – analog zur theoretischen Entwicklung des Universums in einen Zustand maximaler Gleichmäßigkeit.",
+                color: "rgb(124, 77, 255)", // smoothcolor
+                entropy: "Niedrig",
+                complexity: "Optimal",
+                stability: "Sehr hoch"
+            }
+        };
+        
+        // Simulation-Variablen
+        let particles = [];
+        let phaseCycles = 0;
+        let time = 0;
+        let energy = 100;
+        let currentPhase = "chaos";
+        let isPlaying = false;
+        let requestId = null;
+        let width, height;
+        
+        // Einstellungen
+        let settings = {
+            particleCount: 300,
+            simulationSpeed: 5,
+            gravity: 0.5,
+            entropy: 0.8,
+            structureForce: 0.6,
+            autoEvolution: true
+        };
+        
+        // Partikel-Klasse
+        class Particle {
+            constructor(x, y, phase) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 3 + 1;
+                this.baseSize = this.size;
+                this.vx = 0;
+                this.vy = 0;
+                this.ax = 0;
+                this.ay = 0;
+                this.mass = this.size;
+                this.color = "white";
+                this.updateByPhase(phase);
+            }
+            
+            updateByPhase(phase) {
+                switch(phase) {
+                    case "chaos":
+                        // Zufällige, schnelle Bewegung
+                        this.vx = (Math.random() - 0.5) * 6;
+                        this.vy = (Math.random() - 0.5) * 6;
+                        this.color = `rgba(255, ${Math.floor(Math.random() * 100) + 50}, ${Math.floor(Math.random() * 80) + 20}, ${Math.random() * 0.5 + 0.5})`;
+                        this.size = this.baseSize * (Math.random() * 0.5 + 0.75);
+                        break;
+                        
+                    case "structure":
+                        // Strukturierte, langsamere Bewegung mit mehr Muster
+                        this.vx *= 0.7;
+                        this.vy *= 0.7;
+                        this.color = `rgba(${Math.floor(Math.random() * 150) + 100}, ${Math.floor(Math.random() * 150) + 100}, ${Math.floor(Math.random() * 50) + 50}, ${Math.random() * 0.3 + 0.7})`;
+                        break;
+                        
+                    case "balance":
+                        // Ausbalancierte, stabilere Bewegung
+                        this.vx *= 0.5;
+                        this.vy *= 0.5;
+                        this.color = `rgba(${Math.floor(Math.random() * 100) + 50}, ${Math.floor(Math.random() * 200) + 55}, ${Math.floor(Math.random() * 80) + 20}, ${Math.random() * 0.2 + 0.8})`;
+                        break;
+                        
+                    case "energy":
+                        // Effiziente, zielgerichtete Bewegung
+                        this.vx *= 0.3;
+                        this.vy *= 0.3;
+                        this.color = `rgba(${Math.floor(Math.random() * 50)}, ${Math.floor(Math.random() * 150) + 100}, ${Math.floor(Math.random() * 100) + 155}, ${Math.random() * 0.1 + 0.9})`;
+                        break;
+                        
+                    case "smooth":
+                        // Harmonische, geglättete Bewegung
+                        this.vx *= 0.1;
+                        this.vy *= 0.1;
+                        this.color = `rgba(${Math.floor(Math.random() * 130) + 120}, ${Math.floor(Math.random() * 50)}, ${Math.floor(Math.random() * 200) + 55}, ${Math.random() * 0.05 + 0.95})`;
+                        break;
+                }
+            }
+            
+            update(particles, phase) {
+                // Basis-Physik: Position aktualisieren
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                // Beschleunigung zurücksetzen
+                this.ax = 0;
+                this.ay = 0;
+                
+                // Wandkollision
+                if (this.x < 0 || this.x > width) {
+                    this.vx *= -0.8;
+                    this.x = Math.max(0, Math.min(width, this.x));
+                }
+                if (this.y < 0 || this.y > height) {
+                    this.vy *= -0.8;
+                    this.y = Math.max(0, Math.min(height, this.y));
+                }
+                
+                // Phasen-spezifische Physik
+                switch(phase) {
+                    case "chaos":
+                        // Zufällige Beschleunigung und hohe Entropie
+                        this.ax += (Math.random() - 0.5) * settings.entropy * 0.4;
+                        this.ay += (Math.random() - 0.5) * settings.entropy * 0.4;
+                        break;
+                        
+                    case "structure":
+                        // Beginn von Clusterbildung
+                        this.applyGravitationalForces(particles);
+                        // Immer noch etwas Chaos
+                        this.ax += (Math.random() - 0.5) * settings.entropy * 0.15;
+                        this.ay += (Math.random() - 0.5) * settings.entropy * 0.15;
+                        break;
+                        
+                    case "balance":
+                        // Stabilere Gravitationssysteme
+                        this.applyGravitationalForces(particles);
+                        this.applyStructureForces(particles);
+                        // Weniger zufällige Bewegung
+                        this.ax += (Math.random() - 0.5) * settings.entropy * 0.05;
+                        this.ay += (Math.random() - 0.5) * settings.entropy * 0.05;
+                        break;
+                        
+                    case "energy":
+                        // Energieoptimierte Bewegung
+                        this.applyGravitationalForces(particles);
+                        this.applyStructureForces(particles);
+                        this.applyEnergyOptimization();
+                        break;
+                        
+                    case "smooth":
+                        // Harmonisierte, geglättete Bewegung
+                        this.applyGravitationalForces(particles);
+                        this.applyStructureForces(particles);
+                        this.applyEnergyOptimization();
+                        this.applySmoothingForces();
+                        break;
+                }
+                
+                // Geschwindigkeit aktualisieren basierend auf Beschleunigung
+                this.vx += this.ax;
+                this.vy += this.ay;
+                
+                // Dämpfung basierend auf die Phase
+                if (phase === "energy" || phase === "smooth") {
+                    this.vx *= 0.98;
+                    this.vy *= 0.98;
+                } else if (phase === "balance") {
+                    this.vx *= 0.99;
+                    this.vy *= 0.99;
+                }
+            }
+            
+            applyGravitationalForces(particles) {
+                // Gravitationskraft zwischen Partikeln
+                const G = settings.gravity * 0.01; // Gravitationskonstante
+                
+                for (let i = 0; i < particles.length; i++) {
+                    const p = particles[i];
+                    if (p === this) continue;
+                    
+                    // Abstand berechnen
+                    const dx = p.x - this.x;
+                    const dy = p.y - this.y;
+                    const distSq = dx*dx + dy*dy;
+                    
+                    if (distSq > 0) {
+                        // Minimaler Abstand, um zu starke Kräfte bei geringer Distanz zu vermeiden
+                        const minDist = Math.max(distSq, 100);
+                        
+                        // Gravitationskraft berechnen: F = G * (m1 * m2) / r²
+                        const force = G * (this.mass * p.mass) / minDist;
+                        
+                        // Richtung der Kraft
+                        const angle = Math.atan2(dy, dx);
+                        
+                        // Beschleunigung addieren (F = ma ⟹ a = F/m)
+                        this.ax += force * Math.cos(angle) / this.mass;
+                        this.ay += force * Math.sin(angle) / this.mass;
+                    }
+                }
+            }
+            
+            applyStructureForces(particles) {
+                // Strukturierende Kräfte: Clusterbildung und Musterformation
+                const structureFactor = settings.structureForce * 0.01;
+                const repulsionDist = 30; // Abstoßungsdistanz
+                const attractionDist = 120; // Anziehungsdistanz
+                
+                for (let i = 0; i < particles.length; i++) {
+                    const p = particles[i];
+                    if (p === this) continue;
+                    
+                    // Abstand berechnen
+                    const dx = p.x - this.x;
+                    const dy = p.y - this.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    
+                    if (dist > 0) {
+                        let force = 0;
+                        
+                        // Abstoßung bei geringer Distanz
+                        if (dist < repulsionDist) {
+                            force = -structureFactor * (1 - dist/repulsionDist) * 2;
+                        } 
+                        // Anziehung bei mittlerer Distanz
+                        else if (dist < attractionDist) {
+                            force = structureFactor * (dist - repulsionDist) / (attractionDist - repulsionDist) * 0.5;
+                        }
+                        
+                        // Richtung normalisieren
+                        const nx = dx / dist;
+                        const ny = dy / dist;
+                        
+                        // Beschleunigung addieren
+                        this.ax += force * nx;
+                        this.ay += force * ny;
+                    }
+                }
+            }
+            
+            applyEnergyOptimization() {
+                // Energieoptimierung: Bewegung zum lokalen Energieminimum
+                const energyFactor = 0.01;
+                
+                // Geschwindigkeit optimieren - Reduzierung bei hoher Geschwindigkeit
+                const speed = Math.sqrt(this.vx*this.vx + this.vy*this.vy);
+                if (speed > 1) {
+                    const optimizationFactor = 1 - Math.min(1, speed / 10) * energyFactor;
+                    this.vx *= optimizationFactor;
+                    this.vy *= optimizationFactor;
+                }
+                
+                // Zentralisierende Kraft für geschlossene Systeme
+                const dx = width/2 - this.x;
+                const dy = height/2 - this.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                
+                if (dist > width/4) {
+                    const centralFactor = (dist - width/4) / (width/2) * energyFactor * 0.2;
+                    this.ax += dx / dist * centralFactor;
+                    this.ay += dy / dist * centralFactor;
+                }
+            }
+            
+            applySmoothingForces() {
+                // Glättung: Lokale Harmonisierung der Geschwindigkeit
+                const smoothFactor = 0.02;
+                
+                // Verlangsamung bei hoher Beschleunigung
+                const accel = Math.sqrt(this.ax*this.ax + this.ay*this.ay);
+                if (accel > 0.1) {
+                    const scaleFactor = 1 - Math.min(1, accel / 0.5) * smoothFactor;
+                    this.ax *= scaleFactor;
+                    this.ay *= scaleFactor;
+                }
+                
+                // Bewegung zur ruhigeren mittleren Geschwindigkeit
+                const avgVelocity = 0.2; // Ziel-Durchschnittsgeschwindigkeit
+                const speed = Math.sqrt(this.vx*this.vx + this.vy*this.vy);
+                
+                if (speed > avgVelocity) {
+                    const slowFactor = (speed - avgVelocity) / speed * smoothFactor;
+                    this.vx *= (1 - slowFactor);
+                    this.vy *= (1 - slowFactor);
+                }
+            }
+            
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        // Canvas-Größe anpassen
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            width = container.clientWidth;
+            height = Math.max(window.innerHeight * 0.5, 400);
+            
+            canvas.width = width;
+            canvas.height = height;
+            canvas.style.height = `${height}px`;
+            
+            // Partikel in den sichtbaren Bereich verschieben
+            particles.forEach(p => {
+                p.x = Math.min(p.x, width);
+                p.y = Math.min(p.y, height);
+            });
+        }
+        
+        // Partikel initialisieren
+        function initializeParticles() {
+            particles = [];
+            for (let i = 0; i < settings.particleCount; i++) {
+                const x = Math.random() * width;
+                const y = Math.random() * height;
+                particles.push(new Particle(x, y, currentPhase));
+            }
+        }
+        
+        // Phase wechseln
+        function changePhase(phase) {
+            currentPhase = phase;
+            document.getElementById('currentPhase').textContent = phase.charAt(0).toUpperCase() + phase.slice(1);
+            document.getElementById('phaseInfoTitle').textContent = phaseInfos[phase].title;
+            document.getElementById('phaseInfoDesc').textContent = phaseInfos[phase].description;
+            document.getElementById('phaseInfoTitle').style.color = phaseInfos[phase].color;
+            
+            // Update Metriken
+            document.getElementById('entropyValue').textContent = phaseInfos[phase].entropy;
+            document.getElementById('complexityValue').textContent = phaseInfos[phase].complexity;
+            document.getElementById('stabilityValue').textContent = phaseInfos[phase].stability;
+            
+            // Partikel aktualisieren
+            particles.forEach(p => p.updateByPhase(phase));
+            
+            // Alle Phasen-Buttons zurücksetzen und aktuellen aktivieren
+            document.querySelectorAll('.phase-btn').forEach(btn => {
+                btn.classList.remove('ring-4', 'ring-white');
+            });
+            document.querySelector(`.phase-btn[data-phase="${phase}"]`).classList.add('ring-4', 'ring-white');
+        }
+        
+        // Energie-Level aktualisieren
+        function updateEnergy() {
+            // Energie wird mit der Zeit reduziert, abhängig von der Phase
+            if (currentPhase === "chaos") {
+                energy -= 0.04;
+            } else if (currentPhase === "structure") {
+                energy -= 0.02;
+            } else if (currentPhase === "balance") {
+                energy -= 0.01;
+            } else if (currentPhase === "energy") {
+                energy -= 0.005;
+            } else {
+                energy -= 0.002;
+            }
+            
+            energy = Math.max(0, Math.min(100, energy));
+            document.getElementById('energyValue').textContent = `${Math.round(energy)}%`;
+            
+            // Automatischer Phasenwechsel basierend auf Energie
+            if (settings.autoEvolution) {
+                if (energy < 80 && currentPhase === "chaos") {
+                    changePhase("structure");
+                } else if (energy < 60 && currentPhase === "structure") {
+                    changePhase("balance");
+                } else if (energy < 40 && currentPhase === "balance") {
+                    changePhase("energy");
+                } else if (energy < 20 && currentPhase === "energy") {
+                    changePhase("smooth");
+                }
+            }
+        }
+        
+        // Simulation zeichnen
+        function draw() {
+            // Canvas löschen
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Hintergrundeffekt basierend auf der Phase
+            drawPhaseBackground();
+            
+            // Partikel zeichnen
+            particles.forEach(particle => {
+                particle.draw();
+            });
+        }
+        
+        // Phasenspezifischer Hintergrund
+        function drawPhaseBackground() {
+            let gradient;
+            
+            switch(currentPhase) {
+                case "chaos":
+                    // Chaotischer Hintergrund - zufällige Flecken
+                    if (Math.random() > 0.8) {
+                        ctx.fillStyle = `rgba(255, ${Math.floor(Math.random() * 50)}, ${Math.floor(Math.random() * 30)}, 0.03)`;
+                        const x = Math.random() * width;
+                        const y = Math.random() * height;
+                        const size = Math.random() * 100 + 50;
+                        ctx.beginPath();
+                        ctx.arc(x, y, size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    break;
+                    
+                case "structure":
+                    // Linien andeuten
+                    if (Math.random() > 0.95) {
+                        ctx.strokeStyle = `rgba(255, 215, 64, 0.05)`;
+                        ctx.lineWidth = Math.random() * 2 + 1;
+                        ctx.beginPath();
+                        const x1 = Math.random() * width;
+                        const y1 = Math.random() * height;
+                        const x2 = x1 + (Math.random() - 0.5) * 200;
+                        const y2 = y1 + (Math.random() - 0.5) * 200;
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+                        ctx.stroke();
+                    }
+                    break;
+                    
+                case "balance":
+                    // Ruhiger Hintergrund mit harmonischen Wellen
+                    gradient = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, width/2);
+                    gradient.addColorStop(0, 'rgba(100, 221, 23, 0.01)');
+                    gradient.addColorStop(1, 'rgba(50, 120, 10, 0)');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(0, 0, width, height);
+                    break;
+                    
+                case "energy":
+                    // Energielinien und Strömungen
+                    if (Math.random() > 0.9) {
+                        ctx.strokeStyle = `rgba(0, 176, 255, 0.03)`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        
+                        const startX = Math.random() * width;
+                        const startY = Math.random() * height;
+                        ctx.moveTo(startX, startY);
+                        
+                        let x = startX;
+                        let y = startY;
+                        for (let i = 0; i < 5; i++) {
+                            x += (Math.random() - 0.5) * 50;
+                            y += (Math.random() - 0.5) * 50;
+                            ctx.lineTo(x, y);
+                        }
+                        ctx.stroke();
+                    }
+                    break;
+                    
+                case "smooth":
+                    // Sanfter Farbverlauf
+                    gradient = ctx.createLinearGradient(0, 0, width, height);
+                    gradient.addColorStop(0, 'rgba(124, 77, 255, 0.01)');
+                    gradient.addColorStop(0.5, 'rgba(100, 77, 180, 0.005)');
+                    gradient.addColorStop(1, 'rgba(80, 50, 150, 0)');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(0, 0, width, height);
+                    break;
+            }
+        }
+        
+        // Simulation aktualisieren
+        function update() {
+            // Zeit aktualisieren
+            time += 0.1 * settings.simulationSpeed;
+            document.getElementById('timeValue').textContent = Math.floor(time);
+            
+            // Energie aktualisieren
+            updateEnergy();
+            
+            // Partikel aktualisieren
+            particles.forEach(particle => {
+                particle.update(particles, currentPhase);
+            });
+            
+            // Zyklenzähler und Phasenwechsel
+            phaseCycles++;
+        }
+        
+        // Animations-Loop
+        function animate() {
+            update();
+            draw();
+            
+            if (isPlaying) {
+                requestId = requestAnimationFrame(animate);
+            }
+        }
+        
+        // Spielen/Pausieren
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            document.getElementById('playBtn').innerHTML = isPlaying ? '<span>Pause</span>' : '<span>Start</span>';
+            
+            if (isPlaying) {
+                requestId = requestAnimationFrame(animate);
+            } else if (requestId) {
+                cancelAnimationFrame(requestId);
+                requestId = null;
+            }
+        }
+        
+        // Zurücksetzen
+        function resetSimulation() {
+            time = 0;
+            energy = 100;
+            changePhase("chaos");
+            initializeParticles();
+            document.getElementById('timeValue').textContent = '0';
+            document.getElementById('energyValue').textContent = '100%';
+        }
+        
+        // Event-Listener
+        function setupEventListeners() {
+            // Play/Pause Button
+            document.getElementById('playBtn').addEventListener('click', togglePlay);
+            
+            // Reset Button
+            document.getElementById('resetBtn').addEventListener('click', resetSimulation);
+            
+            // Phasen-Buttons
+            document.querySelectorAll('.phase-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    changePhase(btn.dataset.phase);
+                });
+            });
+            
+            // Einstellungen
+            document.getElementById('simulationSpeed').addEventListener('input', function() {
+                settings.simulationSpeed = parseInt(this.value);
+            });
+            
+            document.getElementById('particleCount').addEventListener('change', function() {
+                settings.particleCount = parseInt(this.value);
+                initializeParticles();
+            });
+            
+            document.getElementById('gravity').addEventListener('input', function() {
+                settings.gravity = parseInt(this.value) / 100;
+            });
+            
+            document.getElementById('entropy').addEventListener('input', function() {
+                settings.entropy = parseInt(this.value) / 100;
+            });
+            
+            document.getElementById('structureForce').addEventListener('input', function() {
+                settings.structureForce = parseInt(this.value) / 100;
+            });
+            
+            document.getElementById('autoEvolution').addEventListener('change', function() {
+                settings.autoEvolution = this.checked;
+            });
+        }
+        
+        // Initialisierung
+        function init() {
+            resizeCanvas();
+            setupEventListeners();
+            initializeParticles();
+            changePhase("chaos");
+            
+            // Einstellungen aus UI-Elementen initialisieren
+            settings.simulationSpeed = parseInt(document.getElementById('simulationSpeed').value);
+            settings.particleCount = parseInt(document.getElementById('particleCount').value);
+            settings.gravity = parseInt(document.getElementById('gravity').value) / 100;
+            settings.entropy = parseInt(document.getElementById('entropy').value) / 100;
+            settings.structureForce = parseInt(document.getElementById('structureForce').value) / 100;
+            settings.autoEvolution = document.getElementById('autoEvolution').checked;
+        }
+        
+        // Canvas-Größe anpassen bei Fenstergröße-Änderung
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Initialisieren und erste Animation starten
+        init();
+    </script>
+</body>
+</html>
