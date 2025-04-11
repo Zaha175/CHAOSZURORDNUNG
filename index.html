@@ -1491,6 +1491,9 @@
         
         // Neues Universum mit aktuellen Parametern starten
         function initiateReboot() {
+            console.log("Initiating universe reboot");
+            
+            // Sammle alle Parameter vom UI
             const params = {
                 cosmicConstant: parseInt(document.getElementById('cosmicConstant').value),
                 entropyDirectionality: parseInt(document.getElementById('entropyDirectionality').value),
@@ -1501,65 +1504,120 @@
                 causalLoops: parseInt(document.getElementById('causalLoops').value)
             };
             
-            rebootUniverse(params);
+            // Debug-Log
+            console.log("Reboot parameters:", params);
+            
+            // Interface sofort ausblenden, bevor Universum neu gestartet wird
+            document.getElementById('rebellionInterface').style.opacity = '0';
+            document.getElementById('rebellionInterface').style.pointerEvents = 'none';
+            
+            // Kurze Verzögerung, damit die UI-Änderung fertig ist, bevor wir das Universum zurücksetzen
+            setTimeout(() => rebootUniverse(params), 50);
         }
         
-        // Event-Listener für Rebellion-Interface und Logbuch
+        // Event-Listener für Rebellion-Interface und Logbuch - komplett überarbeitet
         function setupRebellionListeners() {
+            // Direkte onclick-Handler für alle UI-Elemente
+            // Diese Methode vermeidet mögliche Probleme mit addEventListener
+            
             // Rebellion-Interface öffnen
-            document.getElementById('startRebellion').addEventListener('click', showRebellionInterface);
-            document.getElementById('launchRebellion').addEventListener('click', showRebellionInterface);
-            document.getElementById('rebellionButton').addEventListener('click', showRebellionInterface);
+            document.getElementById('startRebellion').onclick = function() {
+                console.log("Opening rebellion interface from header button");
+                showRebellionInterface();
+            };
+            
+            document.getElementById('launchRebellion').onclick = function() {
+                console.log("Opening rebellion interface from sidebar button");
+                showRebellionInterface();
+            };
+            
+            document.getElementById('rebellionButton').onclick = function() {
+                console.log("Opening rebellion interface from warning button");
+                showRebellionInterface();
+            };
             
             // Rebellion-Interface schließen
-            document.getElementById('cancelRebellion').addEventListener('click', function() {
-                document.getElementById('rebellionInterface').style.opacity = '0';
-                document.getElementById('rebellionInterface').style.pointerEvents = 'none';
-            });
+            document.getElementById('cancelRebellion').onclick = function() {
+                console.log("Closing rebellion interface");
+                hideRebellionInterface();
+            };
             
             // Logbuch öffnen/schließen
-            document.getElementById('viewLogbook').addEventListener('click', showLogbook);
-            document.getElementById('closeLogbook').addEventListener('click', function() {
-                document.getElementById('logbookOverlay').style.opacity = '0';
-                document.getElementById('logbookOverlay').style.pointerEvents = 'none';
-            });
+            document.getElementById('viewLogbook').onclick = function() {
+                console.log("Opening logbook");
+                showLogbook();
+            };
+            
+            document.getElementById('closeLogbook').onclick = function() {
+                console.log("Closing logbook");
+                hideLogbook();
+            };
             
             // ESC-Taste zum Schließen der Overlays
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
-                    document.getElementById('logbookOverlay').style.opacity = '0';
-                    document.getElementById('logbookOverlay').style.pointerEvents = 'none';
-                    document.getElementById('rebellionInterface').style.opacity = '0';
-                    document.getElementById('rebellionInterface').style.pointerEvents = 'none';
+                    hideLogbook();
+                    hideRebellionInterface();
                 }
             });
             
             // Parameter-Sliders aktualisieren
-            document.getElementById('cosmicConstant').addEventListener('input', updateRebellionParameters);
-            document.getElementById('entropyDirectionality').addEventListener('input', updateRebellionParameters);
-            document.getElementById('quantumFluctuation').addEventListener('input', updateRebellionParameters);
-            document.getElementById('dimensionality').addEventListener('input', updateRebellionParameters);
-            document.getElementById('complexityBias').addEventListener('input', updateRebellionParameters);
-            document.getElementById('consciousnessThreshold').addEventListener('input', updateRebellionParameters);
-            document.getElementById('causalLoops').addEventListener('input', updateRebellionParameters);
+            document.getElementById('cosmicConstant').oninput = updateRebellionParameters;
+            document.getElementById('entropyDirectionality').oninput = updateRebellionParameters;
+            document.getElementById('quantumFluctuation').oninput = updateRebellionParameters;
+            document.getElementById('dimensionality').oninput = updateRebellionParameters;
+            document.getElementById('complexityBias').oninput = updateRebellionParameters;
+            document.getElementById('consciousnessThreshold').oninput = updateRebellionParameters;
+            document.getElementById('causalLoops').oninput = updateRebellionParameters;
             
-            // Preset-Buttons
-            document.getElementById('fractallicaPreset').addEventListener('click', function() {
+            // Preset-Buttons mit direkten onclick-Handlern
+            document.getElementById('fractallicaPreset').onclick = function() {
+                console.log("Applying Fractallica preset");
                 applyPreset('fractallica');
-            });
-            document.getElementById('reverseEntropyPreset').addEventListener('click', function() {
+                initiateReboot();  // Direkt Neustart nach Preset-Auswahl
+            };
+            
+            document.getElementById('reverseEntropyPreset').onclick = function() {
+                console.log("Applying Negentropie preset");
                 applyPreset('reverseEntropy');
-            });
-            document.getElementById('quantumMindPreset').addEventListener('click', function() {
+                initiateReboot();  // Direkt Neustart nach Preset-Auswahl
+            };
+            
+            document.getElementById('quantumMindPreset').onclick = function() {
+                console.log("Applying Quantum Mind preset");
                 applyPreset('quantumMind');
-            });
-            document.getElementById('chaosBalancePreset').addEventListener('click', function() {
+                initiateReboot();  // Direkt Neustart nach Preset-Auswahl
+            };
+            
+            document.getElementById('chaosBalancePreset').onclick = function() {
+                console.log("Applying Chaos Balance preset");
                 applyPreset('chaosBalance');
-            });
+                initiateReboot();  // Direkt Neustart nach Preset-Auswahl
+            };
             
             // Randomisieren und Initiieren
-            document.getElementById('randomizeParams').addEventListener('click', randomizeParameters);
-            document.getElementById('initiateReboot').addEventListener('click', initiateReboot);
+            document.getElementById('randomizeParams').onclick = function() {
+                console.log("Randomizing parameters");
+                randomizeParameters();
+            };
+            
+            document.getElementById('initiateReboot').onclick = function() {
+                console.log("Initiating reboot with custom parameters");
+                initiateReboot();
+            };
+        }
+        
+        // Helper-Funktionen für UI-Anzeige
+        function hideRebellionInterface() {
+            console.log("Hiding rebellion interface");
+            document.getElementById('rebellionInterface').style.opacity = '0';
+            document.getElementById('rebellionInterface').style.pointerEvents = 'none';
+        }
+        
+        function hideLogbook() {
+            console.log("Hiding logbook");
+            document.getElementById('logbookOverlay').style.opacity = '0';
+            document.getElementById('logbookOverlay').style.pointerEvents = 'none';
         }
         
         // Event-Listener für Hauptsimulation
